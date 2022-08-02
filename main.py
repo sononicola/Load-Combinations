@@ -1,4 +1,3 @@
-from math import gamma
 from LoadCombinations.load_enums import LoadType, DesignTypeULS, PermanentActions, VariableActions
 from LoadCombinations.combination import Load, Combination
 
