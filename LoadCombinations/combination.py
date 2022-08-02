@@ -28,21 +28,37 @@ class Load:
 
     ## Create strings for actual combination output:
 
-    def prod_str2(self, gamma: bool, psi: Literal[0,1,2] | None = None, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain") -> str:
+    def prod_str(self, gamma: bool, psi: Literal[0,1,2] | None = None, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain") -> str:
         "" 
-        if print_style == "plain":
-            if self.action_type in VariableActions:
-                if psi:
-                    return f"{GAMMA_FAV_PLAIN if self.load_type is LoadType.FAVOURABLE else GAMMA_UNFAV_PLAIN} * {Q_NAME_PLAIN}{self.name} * {PSI_PLAIN}{psi}"
+        if gamma: #  so is a ULS combination
+            if print_style == "plain":
+                if self.action_type in VariableActions:
+                    if psi != None:
+                        return f"γ_{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV} * {Q_NAME_PLAIN}{self.name} * {PSI_PLAIN}{psi}"
+                    else:
+                        return f"γ_{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV} * {Q_NAME_PLAIN}{self.name}"
                 else:
-                    return f"{GAMMA_FAV_PLAIN if self.load_type is LoadType.FAVOURABLE else GAMMA_UNFAV_PLAIN} * {Q_NAME_PLAIN}{self.name}"
-            else:
-                return f"{GAMMA_FAV_PLAIN if self.load_type is LoadType.FAVOURABLE else GAMMA_UNFAV_PLAIN} * {self.name}"
-        elif print_style == "latex" or "latex-siunitex":
-            if self.action_type in VariableActions:
-                return f"{GAMMA_FAV_LATEX if self.load_type is LoadType.FAVOURABLE else GAMMA_UNFAV_LATEX} {PRODUCT_LATEX} {Q_NAME_LATEX}{self.name}"+ r"}"+ f" {PRODUCT_LATEX} {PSI_LATEX}{psi}"
-            else:
-                return f"{GAMMA_FAV_LATEX if self.load_type is LoadType.FAVOURABLE else GAMMA_UNFAV_LATEX} {PRODUCT_LATEX} {self.name}"
+                    return f"γ_{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV} * {self.name}"
+            elif print_style == "latex" or "latex-siunitex":
+                if self.action_type in VariableActions:
+                    if psi != None:
+                        return r"\gamma_{" + f"{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV}" + r"}" + f" {PRODUCT_LATEX} {Q_NAME_LATEX}{self.name}"+ r"}"+ f" {PRODUCT_LATEX} {PSI_LATEX}{psi}"
+                    else:
+                        return r"\gamma_{" + f"{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV}" + r"}" + f" {PRODUCT_LATEX} {Q_NAME_LATEX}{self.name}"+ r"}"
+                else:
+                    return r"\gamma_{" + f"{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV}" + r"}" + f" {PRODUCT_LATEX} {self.name}"
+        else: # so is a SLS combination
+            if print_style == "plain":
+                if self.action_type in VariableActions:
+                    return f"{Q_NAME_PLAIN}{self.name} * {PSI_PLAIN}{psi}"
+                else:
+                    return f"{self.name}"
+            elif print_style == "latex" or "latex-siunitex":
+                if self.action_type in VariableActions:
+                    return f" {PRODUCT_LATEX} {Q_NAME_LATEX}{self.name}"+ r"}"+ f" {PRODUCT_LATEX} {PSI_LATEX}{psi}"
+                else:
+                    return f"{self.name}"
+    
 
     def prod_numb(self, gamma:bool, psi: Literal[0,1,2] | None = None, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain") -> str:
         if print_style == "plain":
@@ -79,36 +95,6 @@ class Load:
         
         return gamma_real * self.value * psi_real
 
-    def prod_str(self, gamma: bool, psi: Literal[0,1,2] | None = None, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain") -> str:
-        "" 
-        if gamma: #  so is a ULS combination
-            if print_style == "plain":
-                if self.action_type in VariableActions:
-                    if psi != None:
-                        return f"γ_{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV} * {Q_NAME_PLAIN}{self.name} * {PSI_PLAIN}{psi}"
-                    else:
-                        return f"γ_{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV} * {Q_NAME_PLAIN}{self.name}"
-                else:
-                    return f"γ_{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV} * {self.name}"
-            elif print_style == "latex" or "latex-siunitex":
-                if self.action_type in VariableActions:
-                    if psi != None:
-                        return r"\gamma_{" + f"{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV}" + r"}" + f" {PRODUCT_LATEX} {Q_NAME_LATEX}{self.name}"+ r"}"+ f" {PRODUCT_LATEX} {PSI_LATEX}{psi}"
-                    else:
-                        return r"\gamma_{" + f"{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV}" + r"}" + f" {PRODUCT_LATEX} {Q_NAME_LATEX}{self.name}"+ r"}"
-                else:
-                    return r"\gamma_{" + f"{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV}" + r"}" + f" {PRODUCT_LATEX} {self.name}"
-        else: # so is a SLS combination
-            if print_style == "plain":
-                if self.action_type in VariableActions:
-                    return f"{Q_NAME_PLAIN}{self.name} * {PSI_PLAIN}{psi}"
-                else:
-                    return f"{self.name}"
-            elif print_style == "latex" or "latex-siunitex":
-                if self.action_type in VariableActions:
-                    return f" {PRODUCT_LATEX} {Q_NAME_LATEX}{self.name}"+ r"}"+ f" {PRODUCT_LATEX} {PSI_LATEX}{psi}"
-                else:
-                    return f"{self.name}"
         
 
     
@@ -196,7 +182,7 @@ class Combination:
 
     
 
-    def generic_comb(self, name:str, name2:str, gamma:bool, psi: list[int | None], print_style: Literal["plain", "latex", "latex-siunitex"] = "latex", measure_unit_plain:str = "kN", measure_unit_siunitex:str = r"\kilo\newton")-> str:
+    def generic_comb2(self, name:str, name2:str, gamma:bool, psi: list[int | None], print_style: Literal["plain", "latex", "latex-siunitex"] = "latex", measure_unit_plain:str = "kN", measure_unit_siunitex:str = r"\kilo\newton")-> str:
         combinations = self.combinations()
         # combinations are composed always with g1 g2 principal load, and not principal loads
         # gamma[0] == favourable, gamma[1] == unfavourable
@@ -269,16 +255,82 @@ class Combination:
 
 
         return text
+    def generic_comb(self, name:str, name2:str, gamma:bool, psi: list[int | None], print_style: Literal["plain", "latex", "latex-siunitex"] = "latex", measure_unit_plain:str = "kN", measure_unit_siunitex:str = r"\kilo\newton")-> list[dict]:
+        combinations = self.combinations()
+        # combinations are composed always with g1 g2 principal load, and not principal loads #TODO no anymore. check if its true
+        # gamma[0] == favourable, gamma[1] == unfavourable
 
-    def ULS(self, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain"):
-        return self.generic_comb(name = NAME_ULS, name2="", gamma=True, psi= [None, 0], print_style=print_style)
+        
+    #results[f"{name}_{name2}"] 
+        results_comb:list= list() 
+        for comb in combinations:
+            d_comb = dict()
+            d_comb["name_combination"] = f"{comb[2].name}"
+            str_list = []
+            numb_list = []
+            res_partial = []
+            principal_load = True # to determine if the variable load is principal or not
 
-    def SLS_CHAR(self, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain"):
-        return self.generic_comb(name = NAME_SLS, name2=NAME_SLS_CHAR, gamma=False, psi= [None, 0], print_style=print_style)
+            # G1 and G2
+            for load in comb: 
+                if load.action_type in PermanentActions:
+                    str_list.append(load.prod_str(gamma=gamma, print_style=print_style))
+                    numb_list.append(load.prod_numb(gamma=gamma, print_style=print_style))
+                    res_partial.append(load.prod_res(gamma=gamma))
+            
+                if  load.action_type in VariableActions and principal_load == True: # principal load
+                    str_list.append(load.prod_str(gamma=gamma, psi=psi[0], print_style=print_style))
+                    numb_list.append(load.prod_numb(gamma=gamma, psi=psi[0], print_style=print_style))
+                    res_partial.append(load.prod_res(gamma=gamma, psi=psi[0]))
+                    principal_load = False
+                elif load.action_type in VariableActions and principal_load == False:
+                    str_list.append(load.prod_str(gamma=gamma, psi=psi[1], print_style=print_style))
+                    numb_list.append(load.prod_numb(gamma=gamma, psi=psi[1], print_style=print_style))
+                    res_partial.append(load.prod_res(gamma=gamma, psi=psi[1]))
 
-    def SLS_FREQ(self, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain"):
-        return self.generic_comb(name = NAME_SLS, name2=NAME_SLS_FREQ, gamma=False, psi= [1, 2], print_style=print_style)
 
-    def SLS_QP(self, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain"):
-        return self.generic_comb(name = NAME_SLS, name2=NAME_SLS_QP, gamma=False, psi= [2, 2], print_style=print_style)
+
+            d_comb["str_list"] = str_list
+            d_comb["numb_list"] = numb_list
+            d_comb["res_partial"] = res_partial
+            d_comb["tot"] = sum(res_partial)
+
+            results_comb.append(d_comb)
+
+
+        return results_comb
+
+    def calc_combinations_results(self, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain") -> dict[list[dict]]:
+        results = dict()
+
+        results[NAME_ULS] = self.generic_comb(name = NAME_ULS, name2="", gamma=True, psi= [None, 0], print_style=print_style)
+        results[NAME_SLS + NAME_SLS_CHAR] = self.generic_comb(name = NAME_SLS, name2=NAME_SLS_CHAR, gamma=False, psi= [None, 0], print_style=print_style)
+        results[NAME_SLS + NAME_SLS_FREQ] = self.generic_comb(name = NAME_SLS, name2=NAME_SLS_FREQ, gamma=False, psi= [1, 2], print_style=print_style)
+        results[NAME_SLS + NAME_SLS_QP] = self.generic_comb(name = NAME_SLS, name2=NAME_SLS_QP, gamma=False, psi= [2, 2], print_style=print_style)
+    
+        return results
+
+    def print_from_results_dict(self, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain") -> str:
+        results:dict = self.calc_combinations_results(print_style)
+
+        if print_style == "plain":
+            text = ""
+            JUST = 25
+            for key in list(results.keys()):
+                combs:list[dict] = results.get(key) 
+                text += f"===== {key} =====\n"
+                for comb in combs:
+                    text += f"{key} { comb.get('name_combination')}".ljust(JUST-1) + "= " + f"{' + '.join(comb.get('str_list'))}"
+                    text += "\n " .ljust(JUST) + "= " + f"{' + '.join(comb.get('numb_list'))}"
+                    text += "\n " .ljust(JUST) + "= " + f"{' + '.join([str(i) for i in comb.get('res_partial')])}" #erano float not stringhe
+                    text += "\n " .ljust(JUST) + "= " + f"{comb.get('tot'):.2f}"
+                    text += "\n"
+                text += "\n"
+            return text
+
+    def run(self, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain") -> str:
+        return self.print_from_results_dict(print_style)
+
+
+       
 

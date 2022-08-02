@@ -66,11 +66,11 @@
             "psi" : [0.6, 0.2, 0.0]
         },
         "snow < 1000m" : {
-            "name": "snow < 1000m",
+            "name": "snow",
             "psi" : [0.5, 0.2, 0.0]
         },
         "snow > 1000m" : {
-            "name": "snow > 1000m",
+            "name": "snow",
             "psi" : [1,2,3]
         },
         "temperature" : {

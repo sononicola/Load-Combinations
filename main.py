@@ -25,21 +25,9 @@ def main():
     #print(g2.gamma)
     #print(q_a.gamma)
 
-    print(comb.ULS(print_style="plain"))
-    #print(comb.ULS(print_style="latex"))
-    #print(comb.ULS(print_style="latex-siunitex"))
-    print(" ======= ")
-    print(comb.SLS_CHAR(print_style="plain"))
-    #print(comb.SLS_CHAR(print_style="latex"))
-    #print(comb.SLS_CHAR(print_style="latex-siunitex"))
-    print(" ======= ")
-    print(comb.SLS_FREQ(print_style="plain"))
-    #print(comb.SLS_FREQ(print_style="latex"))
-    #print(comb.SLS_FREQ(print_style="latex-siunitex"))
-    print(" ======= ")
-    print(comb.SLS_QP(print_style="plain"))
-    #print(comb.SLS_QP(print_style="latex"))
-    #print(comb.SLS_QP(print_style="latex-siunitex"))
+
+    print(comb.run("plain"))
+    print(comb.calc_combinations_results("plain"))
 
 if __name__ == "__main__":
     main()

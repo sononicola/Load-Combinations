@@ -1,7 +1,7 @@
 CODE_NAME = "NTC18"
 
-NAME_ULS = "SLU"
-NAME_SLS = "SLE"
+NAME_ULS = "SLU "
+NAME_SLS = "SLE "
 NAME_SLS_CHAR = "rara"
 NAME_SLS_FREQ = "freq."
 NAME_SLS_QP =  "q. perm."
