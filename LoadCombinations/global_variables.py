@@ -18,7 +18,7 @@ GAMMA_FAV_LATEX= r"\gamma_{f}"
 
 
 PRODUCT_LATEX = r"\cdot"
-PSI_LATEX = r"\varpsi_"
+PSI_LATEX = r"\psi_"
 
 SUBSCRIPT_GAMMA_UNFAV = "S"
 SUBSCRIPT_GAMMA_FAV = "F"

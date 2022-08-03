@@ -6,9 +6,6 @@ from LoadCombinations.combination import Load, Combination
 possibleActions = [load.value for load in PermanentActions]
 possibleActions.extend([load.value for load in VariableActions])
 
-# Timber: 
-service_classes = ["1", "2", "3"]
-timber_materials = ["Massiccio-Lamellare-LVL"] #  tab 4.4.IV NTC
 
 # -- GENERAL PAGE SETUP --
 st.set_page_config(
@@ -21,7 +18,7 @@ st.set_page_config(
 
 
 # -- PAGE CONTENT --
-st.title("Load Combinations")
+st.header("Load Combinations")
 st.subheader("according to NTC18 and EuroCode 0")
 
 c1, c2 = st.columns([2,1])
@@ -81,10 +78,16 @@ for i in range(nLoads):
         action_real.append(VariableActions(action[i]))
 
 
+
 loads = [Load(action_real[i], LoadType(loadTypes[i]), loadValues[i]) for i in range(nLoads) ]
 
 comb = Combination(loads=loads, design_type=DesignTypeULS(design_type))
 
+st.latex(r"\footnotesize"+comb.run("latex", is_streamlit=True))
+
 t1,t2,t3 = st.tabs(["Plain Text", "LaTeX", "LaTeX+SIunitx"])
 with t1:
         st.code(comb.run("plain"))
+
+with t2:
+    st.code(comb.run("latex"),language="latex")

@@ -85,7 +85,7 @@ class Load:
             elif gamma == False and psi != None:
                 return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value} {PRODUCT_LATEX} {self.psi[psi]}"
             elif gamma == False and psi == None:
-                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value} {PRODUCT_LATEX}"
+                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value}"
             else:
                 return f"{self.value}"
         elif print_style == "latex-siunitex":
@@ -96,7 +96,7 @@ class Load:
             elif gamma == False and psi != None:
                 return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}" + siunitex(self.value) + f"{PRODUCT_LATEX} {self.psi[psi]}"
             elif gamma == False and psi == None:
-                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}" + siunitex(self.value) + f"{PRODUCT_LATEX}"
+                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}" + siunitex(self.value)
             else:
                 return siunitex(self.value)
 
@@ -117,6 +117,13 @@ class Combination:
         self.design_type = design_type
 
         self.add_gamma_to_loads() 
+        self.check_unique_load()
+
+    def check_unique_load(self):
+        "Check if each Load inserted is unique"
+        n_of_count: list[bool] = [self.loads.count(load)>1 for load in self.loads] 
+        if any(n_of_count): # If at least one is True
+            raise ValueError("Be carefull you have insered two or more Load of the same action!")
 
     def add_gamma_to_loads(self):
         "Add gamma coeficients to Load objects. Have to be done here because they depend on design type"
@@ -322,7 +329,7 @@ class Combination:
     
         return results
 
-    def print_from_results_dict(self, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain") -> str:
+    def print_from_results_dict(self, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain", is_streamlit:bool=False) -> str:
         results:dict = self.calc_combinations_results(print_style)
 
         if print_style == "plain":
@@ -339,9 +346,25 @@ class Combination:
                     text += "\n"
                 text += "\n"
             return text
+        if print_style == "latex":
+            text = r"\begin{align}"+"\n" if is_streamlit == False else r"\begin{aligned}"+"\n"
+            JUST = 25
+            for key in list(results.keys()):
+                combs:list[dict] = results.get(key) 
+                #text += f"===== {key} =====\n"
+                for comb in combs:
+                    text += r"\begin{split}"+"\n" if is_streamlit == False else "\n"
+                    text += f"{Q_NAME_LATEX+comb.get('name_combination')+'}^{'+key+'}'}".ljust(JUST-1) + "&= " + f"{' + '.join(comb.get('str_list'))} \\\\"
+                    text += "\n " .ljust(JUST) + "&= " + f"{' + '.join(comb.get('numb_list'))} \\\\"
+                    text += "\n " .ljust(JUST) + "&= " + f"{' + '.join([str(i) for i in comb.get('res_partial')])} \\\\" #they were floats not strings
+                    text += "\n " .ljust(JUST) + "&= " + f"{comb.get('tot'):.2f} \n" + r"\end{split} \\" + "\n" if is_streamlit == False else "\n " .ljust(JUST) + "&= " + f"{comb.get('tot'):.2f} \n" + r" \\" + "\n"
+                    #text += r"\end{split} \\".ljust(JUST)
+                    #text += "\n".ljust(JUST)
+            text += r"\end{align}" if is_streamlit == False else r"\end{aligned}"+"\n"
+            return text
 
-    def run(self, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain") -> str:
-        return self.print_from_results_dict(print_style)
+    def run(self, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain", is_streamlit:bool=False) -> str:
+        return self.print_from_results_dict(print_style, is_streamlit=is_streamlit)
 
 
        
