@@ -82,7 +82,6 @@ for i in range(nLoads):
 
 
 loads = [Load(action_real[i], LoadType(loadTypes[i]), loadValues[i]) for i in range(nLoads) ]
-print(loads)
 
 comb = Combination(loads=loads, design_type=DesignTypeULS(design_type))
 

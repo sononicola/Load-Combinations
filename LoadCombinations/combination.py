@@ -33,11 +33,11 @@ class Load:
         if gamma: #  so is a ULS combination
             if print_style == "plain":
                 if self.action_type in VariableActions:
-                    if psi != None:
+                    if psi != None: 
                         return f"γ_{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV} * {Q_NAME_PLAIN}{self.name} * {PSI_PLAIN}{psi}"
-                    else:
+                    else: 
                         return f"γ_{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV} * {Q_NAME_PLAIN}{self.name}"
-                else:
+                else: # Permanent Action
                     return f"γ_{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV} * {self.name}"
             elif print_style == "latex" or "latex-siunitex":
                 if self.action_type in VariableActions:
@@ -49,13 +49,18 @@ class Load:
                     return r"\gamma_{" + f"{self.name},{SUBSCRIPT_GAMMA_FAV if self.load_type is LoadType.FAVOURABLE else SUBSCRIPT_GAMMA_UNFAV}" + r"}" + f" {PRODUCT_LATEX} {self.name}"
         else: # so is a SLS combination
             if print_style == "plain":
-                if self.action_type in VariableActions:
-                    return f"{Q_NAME_PLAIN}{self.name} * {PSI_PLAIN}{psi}"
+                if self.action_type in VariableActions and psi != None: # SLS Freq and QP
+                    # if the Q is fav then it must be zero:
+                    return f"{NOTHING_PLAIN+' * '+Q_NAME_PLAIN if self.load_type is LoadType.FAVOURABLE else Q_NAME_PLAIN}{self.name} * {PSI_PLAIN}{psi}"
+                elif self.action_type in VariableActions and psi == None: # SLS char
+                    return f"{NOTHING_PLAIN+' * '+Q_NAME_PLAIN if self.load_type is LoadType.FAVOURABLE else Q_NAME_PLAIN}{self.name}"
                 else:
-                    return f"{self.name}"
+                    return f"{self.name}" # G1 G2
             elif print_style == "latex" or "latex-siunitex":
-                if self.action_type in VariableActions:
-                    return f" {PRODUCT_LATEX} {Q_NAME_LATEX}{self.name}"+ r"}"+ f" {PRODUCT_LATEX} {PSI_LATEX}{psi}"
+                if self.action_type in VariableActions and psi != None:
+                    return f"{NOTHING_LATEX+' * '+Q_NAME_LATEX if self.load_type is LoadType.FAVOURABLE else Q_NAME_LATEX}{self.name}"+ r"}"+ f" {PRODUCT_LATEX} {PSI_LATEX}{psi}"
+                elif self.action_type in VariableActions and psi == None:
+                    return f"{NOTHING_LATEX+' * '+Q_NAME_LATEX if self.load_type is LoadType.FAVOURABLE else Q_NAME_LATEX}{self.name}"+ r"}"
                 else:
                     return f"{self.name}"
     
@@ -67,7 +72,9 @@ class Load:
             elif gamma and psi == None:
                 return f"{self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1]} * {self.value}"
             elif gamma == False and psi != None:
-                return f"{self.value} * {self.psi[psi]}"
+                return f"{NOTHING_PLAIN+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value} * {self.psi[psi]}"
+            elif gamma == False and psi == None:
+                return f"{NOTHING_PLAIN+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value}"
             else:
                 return f"{self.value}"
         elif print_style == "latex":
@@ -76,7 +83,9 @@ class Load:
             elif gamma and psi == None:
                 return f"{self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1]} {PRODUCT_LATEX} {self.value}"
             elif gamma == False and psi != None:
-                return f"{self.value} {PRODUCT_LATEX} {self.psi[psi]}"
+                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value} {PRODUCT_LATEX} {self.psi[psi]}"
+            elif gamma == False and psi == None:
+                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value} {PRODUCT_LATEX}"
             else:
                 return f"{self.value}"
         elif print_style == "latex-siunitex":
@@ -85,12 +94,15 @@ class Load:
             elif gamma and psi == None:
                 return f"{self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1]} {PRODUCT_LATEX} " + siunitex(self.value)
             elif gamma == False and psi != None:
-                return siunitex(self.value) + f"{PRODUCT_LATEX} {self.psi[psi]}"
+                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}" + siunitex(self.value) + f"{PRODUCT_LATEX} {self.psi[psi]}"
+            elif gamma == False and psi == None:
+                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}" + siunitex(self.value) + f"{PRODUCT_LATEX}"
             else:
                 return siunitex(self.value)
 
     def prod_res(self, gamma:bool, psi: Literal[0,1,2] | None = None) -> float:
         gamma_real = self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1] if gamma  else 1
+        # this also means that in every SLS combinations, Q fav is zero:
         psi_real = 1 if psi == None else self.psi[psi]
         
         return gamma_real * self.value * psi_real

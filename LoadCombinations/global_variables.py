@@ -23,6 +23,10 @@ PSI_LATEX = r"\varpsi_"
 SUBSCRIPT_GAMMA_UNFAV = "S"
 SUBSCRIPT_GAMMA_FAV = "F"
 
+NOTHING_PLAIN = "∅"
+NOTHING_LATEX = r"\varnothing"
+
+
 DICT_GENIERIC_MATERIAL = {
     "ULS": {
         "gamma": True,
