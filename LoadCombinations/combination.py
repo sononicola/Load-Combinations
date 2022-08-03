@@ -117,13 +117,19 @@ class Combination:
         self.design_type = design_type
 
         self.add_gamma_to_loads() 
-        self.check_unique_load()
 
-    def check_unique_load(self):
-        "Check if each Load inserted is unique"
-        n_of_count: list[bool] = [self.loads.count(load)>1 for load in self.loads] 
+        self.actions_types: list[PermanentActions|VariableActions] = [load.action_type for load in self.loads]
+        self.check_unique_load()
+        self.is_catI_or_catK()
+
+    def check_unique_load(self) -> ValueError:
+        "Check if each Action Type inserted is unique"
+        n_of_count:list[bool] = [self.actions_types.count(action)>1 for action in self.actions_types]
         if any(n_of_count): # If at least one is True
             raise ValueError("Be carefull you have insered two or more Load of the same action!")
+
+    def is_catI_or_catK(self) -> bool:
+        return VariableActions.CAT_K in self.actions_types
 
     def add_gamma_to_loads(self):
         "Add gamma coeficients to Load objects. Have to be done here because they depend on design type"

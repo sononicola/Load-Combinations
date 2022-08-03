@@ -26,6 +26,7 @@ with c1:
     nLoads = int(st.number_input(
             label = "n carichi", 
             min_value=1, 
+            max_value=14,
             value=4)
     )
 with c2:
@@ -40,7 +41,8 @@ with c1:
     loadValues = [
         st.number_input(
             label = f"Valore {i}",
-            min_value = 1.,
+            min_value = 0.0,
+            value=1.,
             step = 1.,
             format = "%.3f",
             key = f"LoadValue {i}"
@@ -83,6 +85,9 @@ loads = [Load(action_real[i], LoadType(loadTypes[i]), loadValues[i]) for i in ra
 
 comb = Combination(loads=loads, design_type=DesignTypeULS(design_type))
 
+if comb.is_catI_or_catK():
+    st.warning("To use Cat I or Cat K you need to change psi coefficients!")
+
 st.latex(r"\footnotesize"+comb.run("latex", is_streamlit=True))
 
 t1,t2,t3 = st.tabs(["Plain Text", "LaTeX", "LaTeX+SIunitx"])
@@ -91,3 +96,5 @@ with t1:
 
 with t2:
     st.code(comb.run("latex"),language="latex")
+    
+st.write(comb.calc_combinations_results())
