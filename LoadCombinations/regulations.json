@@ -21,61 +21,61 @@
         "G2" : {
             "name": "G2"
         },
-        "A" : {
+        "Cat. A" : {
             "name": "Cat. A",
             "psi" : [0.7, 0.5, 0.3]
         },
-        "B" : {
+        "Cat. B" : {
             "name": "Cat. B",
             "psi" : [0.7, 0.5, 0.3]
         },
-        "C" : {
-            "name": "C",
+        "Cat. C" : {
+            "name": "Cat. C",
             "psi" : [0.7, 0.7, 0.6]
         },
-        "D" : {
-            "name": "D",
-            "psi" : [1,2,3]
+        "Cat. D" : {
+            "name": "Cat. D",
+            "psi" : [0.7, 0.7, 0.6]
         },
-        "E" : {
-            "name": "E",
-            "psi" : [1,2,3]
+        "Cat. E" : {
+            "name": "Cat. E",
+            "psi" : [1.0, 0.9, 0.8]
         },
-        "F" : {
-            "name": "F",
-            "psi" : [1,2,3]
+        "Cat. F" : {
+            "name": "Cat. F",
+            "psi" : [0.7, 0.7, 0.6]
         },
-        "G" : {
-            "name": "G",
-            "psi" : [1,2,3]
+        "Cat. G" : {
+            "name": "Cat. G",
+            "psi" : [0.7, 0.5, 0.3]
         },
-        "H" : {
-            "name": "H",
-            "psi" : [1,2,3]
+        "Cat. H" : {
+            "name": "Cat. H",
+            "psi" : [0.0, 0.0, 0.0]
         },
-        "I" : {
-            "name": "I",
-            "psi" : [1,2,3]
+        "Cat. I" : {
+            "name": "Cat. I",
+            "psi" : [1.0, 1.0, 1.0]
         },
-        "K" : {
-            "name": "K",
-            "psi" : [1,2,3]
+        "Cat. K" : {
+            "name": "Cat. K",
+            "psi" : [1.0, 1.0, 1.0]
         },
-        "wind" : {
-            "name": "wind",
+        "Wind" : {
+            "name": "Wind",
             "psi" : [0.6, 0.2, 0.0]
         },
-        "snow < 1000m" : {
-            "name": "snow",
+        "Snow < 1000m" : {
+            "name": "Snow",
             "psi" : [0.5, 0.2, 0.0]
         },
-        "snow > 1000m" : {
-            "name": "snow",
-            "psi" : [1,2,3]
+        "Snow > 1000m" : {
+            "name": "Snow",
+            "psi" : [0.7, 0.5, 0.2]
         },
-        "temperature" : {
-            "name": "temperature",
-            "psi" : [1,2,3]
+        "Temperature" : {
+            "name": "Temperature",
+            "psi" : [0.6, 0.5, 0.0]
         }
 
     }
