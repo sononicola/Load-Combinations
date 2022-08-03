@@ -12,7 +12,7 @@ st.set_page_config(
      page_title = "Load Combinations",
      page_icon = "👷‍♂️",
      initial_sidebar_state = "expanded",
-     layout="centered"
+     layout="wide"
 )
 # -- SIDEBAR --
 

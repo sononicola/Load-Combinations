@@ -68,24 +68,24 @@ class Load:
     def prod_numb(self, gamma:bool, psi: Literal[0,1,2] | None = None, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain") -> str:
         if print_style == "plain":
             if gamma and psi != None:
-                return f"{self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1]} * {self.value} * {self.psi[psi]}"
+                return f"{self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1]} * {self.value:.2f} * {self.psi[psi]}"
             elif gamma and psi == None:
-                return f"{self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1]} * {self.value}"
+                return f"{self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1]} * {self.value:.2f}"
             elif gamma == False and psi != None:
-                return f"{NOTHING_PLAIN+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value} * {self.psi[psi]}"
+                return f"{NOTHING_PLAIN+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value:.2f} * {self.psi[psi]}"
             elif gamma == False and psi == None:
-                return f"{NOTHING_PLAIN+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value}"
+                return f"{NOTHING_PLAIN+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value:.2f}"
             else:
                 return f"{self.value}"
         elif print_style == "latex":
             if gamma and psi != None:
-                return f"{self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1]} {PRODUCT_LATEX} {self.value} {PRODUCT_LATEX} {self.psi[psi]}"
+                return f"{self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1]} {PRODUCT_LATEX} {self.value:.2f} {PRODUCT_LATEX} {self.psi[psi]}"
             elif gamma and psi == None:
-                return f"{self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1]} {PRODUCT_LATEX} {self.value}"
+                return f"{self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1]} {PRODUCT_LATEX} {self.value:.2f}"
             elif gamma == False and psi != None:
-                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value} {PRODUCT_LATEX} {self.psi[psi]}"
+                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value:.2f} {PRODUCT_LATEX} {self.psi[psi]}"
             elif gamma == False and psi == None:
-                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value}"
+                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value:.2f}"
             else:
                 return f"{self.value}"
         elif print_style == "latex-siunitex":
@@ -341,7 +341,7 @@ class Combination:
                 for comb in combs:
                     text += f"{key} { comb.get('name_combination')}".ljust(JUST-1) + "= " + f"{' + '.join(comb.get('str_list'))}"
                     text += "\n " .ljust(JUST) + "= " + f"{' + '.join(comb.get('numb_list'))}"
-                    text += "\n " .ljust(JUST) + "= " + f"{' + '.join([str(i) for i in comb.get('res_partial')])}" #erano float not stringhe
+                    text += "\n " .ljust(JUST) + "= " + f"{' + '.join([f'{i:.2f}' for i in comb.get('res_partial')])}" #erano float not stringhe
                     text += "\n " .ljust(JUST) + "= " + f"{comb.get('tot'):.2f}"
                     text += "\n"
                 text += "\n"
@@ -356,7 +356,7 @@ class Combination:
                     text += r"\begin{split}"+"\n" if is_streamlit == False else "\n"
                     text += f"{Q_NAME_LATEX+comb.get('name_combination')+'}^{'+key+'}'}".ljust(JUST-1) + "&= " + f"{' + '.join(comb.get('str_list'))} \\\\"
                     text += "\n " .ljust(JUST) + "&= " + f"{' + '.join(comb.get('numb_list'))} \\\\"
-                    text += "\n " .ljust(JUST) + "&= " + f"{' + '.join([str(i) for i in comb.get('res_partial')])} \\\\" #they were floats not strings
+                    text += "\n " .ljust(JUST) + "&= " + f"{' + '.join([f'{i:.2f}' for i in comb.get('res_partial')])} \\\\" #they were floats not strings
                     text += "\n " .ljust(JUST) + "&= " + f"{comb.get('tot'):.2f} \n" + r"\end{split} \\" + "\n" if is_streamlit == False else "\n " .ljust(JUST) + "&= " + f"{comb.get('tot'):.2f} \n" + r" \\" + "\n"
                     #text += r"\end{split} \\".ljust(JUST)
                     #text += "\n".ljust(JUST)
