@@ -208,7 +208,7 @@ class Combination:
     
     def generic_comb(self, name:str, name2:str, gamma:bool, psi: list[int | None], print_style: Literal["plain", "latex", "latex-siunitex"] = "latex", measure_unit_plain:str = "kN", measure_unit_siunitex:str = r"\kilo\newton")-> list[dict]:
         combinations = self.combinations()
-        # combinations are composed always with g1 g2 principal load, and not principal loads #TODO no anymore. check if its true
+        # combinations are composed always with g1, g2, principal load, and not principal loads #TODO no anymore. check if its true
         # gamma[0] == favourable, gamma[1] == unfavourable
 
         
@@ -216,13 +216,23 @@ class Combination:
         results_comb:list= list() 
         for comb in combinations:
             d_comb = dict()
-            d_comb["name_combination"] = f"{comb[2].name}"
+            try:
+                d_comb["name_combination"] = f"{comb[2].name}" # so there is at least one variable load
+            except:
+                d_comb["name_combination"] = "G1 - G2" # if there are only permanent loads
             str_list = []
             numb_list = []
             res_partial = []
-            principal_load = True # to determine if the variable load is principal or not
+            principal_load:bool = True # to determine if the variable load is principal or not
 
-            # G1 and G2
+            # if there are only permanent loads
+            if VariableActions not in self.loads:
+                    for load in comb[:0]:
+                        str_list.append(load.prod_str(gamma=gamma, print_style=print_style))
+                        numb_list.append(load.prod_numb(gamma=gamma, print_style=print_style))
+                        res_partial.append(load.prod_res(gamma=gamma))
+
+            # else with also variable loads:
             for load in comb: 
                 if load.action_type in PermanentActions:
                     str_list.append(load.prod_str(gamma=gamma, print_style=print_style))
@@ -258,7 +268,8 @@ class Combination:
         results[NAME_SLS + NAME_SLS_CHAR] = self.generic_comb(name = NAME_SLS, name2=NAME_SLS_CHAR, gamma=False, psi= [None, 0], print_style=print_style)
         results[NAME_SLS + NAME_SLS_FREQ] = self.generic_comb(name = NAME_SLS, name2=NAME_SLS_FREQ, gamma=False, psi= [1, 2], print_style=print_style)
         results[NAME_SLS + NAME_SLS_QP] = self.generic_comb(name = NAME_SLS, name2=NAME_SLS_QP, gamma=False, psi= [2, 2], print_style=print_style)
-    
+        #TODO filtro solo carichi gravitazionali, quindi togliere Vento e P ?
+        #results[NAME_ULS+NAME_SLS+"sismic"] = self.generic_comb(name = NAME_ULS+NAME_SLS, name2="sismic", gamma=False, psi= [2, 2], print_style=print_style)
         return results
 
     def print_from_results_dict(self, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain", is_streamlit:bool=False) -> str:
