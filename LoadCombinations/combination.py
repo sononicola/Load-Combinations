@@ -210,27 +210,39 @@ class Combination:
         combinations = self.combinations()
         # combinations are composed always with g1, g2, principal load, and not principal loads #TODO no anymore. check if its true
         # gamma[0] == favourable, gamma[1] == unfavourable
+        results_comb:list= list() 
 
+        # if there are only permanent loads
+        if self.only_permanent_loads() == combinations[0]:   
+            str_list = []
+            numb_list = []
+            res_partial = []
+            
+            d_comb = dict()
+            d_comb["name_combination"] = "G1 - G2"
+            
+            for load in combinations[0]:
+                str_list.append(load.prod_str(gamma=gamma, print_style=print_style))
+                numb_list.append(load.prod_numb(gamma=gamma, print_style=print_style))
+                res_partial.append(load.prod_res(gamma=gamma))
+            d_comb["str_list"] = str_list
+            d_comb["numb_list"] = numb_list
+            d_comb["res_partial"] = res_partial
+            d_comb["tot"] = sum(res_partial)
+
+            results_comb.append(d_comb)
+
+
+            return results_comb
         
     #results[f"{name}_{name2}"] 
-        results_comb:list= list() 
         for comb in combinations:
             d_comb = dict()
-            try:
-                d_comb["name_combination"] = f"{comb[2].name}" # so there is at least one variable load
-            except:
-                d_comb["name_combination"] = "G1 - G2" # if there are only permanent loads
+            d_comb["name_combination"] = f"{comb[2].name}" # so there is at least one variable load
             str_list = []
             numb_list = []
             res_partial = []
             principal_load:bool = True # to determine if the variable load is principal or not
-
-            # if there are only permanent loads
-            if VariableActions not in self.loads:
-                    for load in comb[:0]:
-                        str_list.append(load.prod_str(gamma=gamma, print_style=print_style))
-                        numb_list.append(load.prod_numb(gamma=gamma, print_style=print_style))
-                        res_partial.append(load.prod_res(gamma=gamma))
 
             # else with also variable loads:
             for load in comb: 
