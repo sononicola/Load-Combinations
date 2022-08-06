@@ -58,9 +58,9 @@ class Load:
                     return f"{self.name}" # G1 G2
             elif print_style == "latex" or "latex-siunitex":
                 if self.action_type in VariableActions and psi != None:
-                    return f"{NOTHING_LATEX+' * '+Q_NAME_LATEX if self.load_type is LoadType.FAVOURABLE else Q_NAME_LATEX}{self.name}"+ r"}"+ f" {PRODUCT_LATEX} {PSI_LATEX}{psi}"
+                    return f"{NOTHING_LATEX+PRODUCT_LATEX+Q_NAME_LATEX if self.load_type is LoadType.FAVOURABLE else Q_NAME_LATEX}{self.name}"+ r"}"+ f" {PRODUCT_LATEX} {PSI_LATEX}{psi}"
                 elif self.action_type in VariableActions and psi == None:
-                    return f"{NOTHING_LATEX+' * '+Q_NAME_LATEX if self.load_type is LoadType.FAVOURABLE else Q_NAME_LATEX}{self.name}"+ r"}"
+                    return f"{NOTHING_LATEX+PRODUCT_LATEX+Q_NAME_LATEX if self.load_type is LoadType.FAVOURABLE else Q_NAME_LATEX}{self.name}"+ r"}"
                 else:
                     return f"{self.name}"
     
@@ -83,9 +83,9 @@ class Load:
             elif gamma and psi == None:
                 return f"{self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1]} {PRODUCT_LATEX} {self.value:.2f}"
             elif gamma == False and psi != None:
-                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value:.2f} {PRODUCT_LATEX} {self.psi[psi]}"
+                return f"{NOTHING_LATEX+PRODUCT_LATEX if self.load_type is LoadType.FAVOURABLE else ''}{self.value:.2f} {PRODUCT_LATEX} {self.psi[psi]}"
             elif gamma == False and psi == None:
-                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}{self.value:.2f}"
+                return f"{NOTHING_LATEX+PRODUCT_LATEX if self.load_type is LoadType.FAVOURABLE else ''}{self.value:.2f}"
             else:
                 return f"{self.value}"
         elif print_style == "latex-siunitex":
@@ -94,9 +94,9 @@ class Load:
             elif gamma and psi == None:
                 return f"{self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1]} {PRODUCT_LATEX} " + siunitex(self.value)
             elif gamma == False and psi != None:
-                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}" + siunitex(self.value) + f"{PRODUCT_LATEX} {self.psi[psi]}"
+                return f"{NOTHING_LATEX+PRODUCT_LATEX if self.load_type is LoadType.FAVOURABLE else ''}" + siunitex(self.value) + f"{PRODUCT_LATEX} {self.psi[psi]}"
             elif gamma == False and psi == None:
-                return f"{NOTHING_LATEX+' * ' if self.load_type is LoadType.FAVOURABLE else ''}" + siunitex(self.value)
+                return f"{NOTHING_LATEX+PRODUCT_LATEX if self.load_type is LoadType.FAVOURABLE else ''}" + siunitex(self.value)
             else:
                 return siunitex(self.value)
 
