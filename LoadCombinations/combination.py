@@ -58,9 +58,9 @@ class Load:
                     return f"{self.name}" # G1 G2
             elif print_style == "latex" or "latex-siunitex":
                 if self.action_type in VariableActions and psi != None:
-                    return f"{NOTHING_LATEX+PRODUCT_LATEX+Q_NAME_LATEX if self.load_type is LoadType.FAVOURABLE else Q_NAME_LATEX}{self.name}"+ r"}"+ f" {PRODUCT_LATEX} {PSI_LATEX}{psi}"
+                    return f"{NOTHING_LATEX+PRODUCT_LATEX+' '+Q_NAME_LATEX if self.load_type is LoadType.FAVOURABLE else Q_NAME_LATEX}{self.name}"+ r"}"+ f" {PRODUCT_LATEX} {PSI_LATEX}{psi}"
                 elif self.action_type in VariableActions and psi == None:
-                    return f"{NOTHING_LATEX+PRODUCT_LATEX+Q_NAME_LATEX if self.load_type is LoadType.FAVOURABLE else Q_NAME_LATEX}{self.name}"+ r"}"
+                    return f"{NOTHING_LATEX+PRODUCT_LATEX+' '+Q_NAME_LATEX if self.load_type is LoadType.FAVOURABLE else Q_NAME_LATEX}{self.name}"+ r"}"
                 else:
                     return f"{self.name}"
     
