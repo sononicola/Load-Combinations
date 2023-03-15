@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "load-combinations"
+version = "0.1.0"
+description = ""
+authors = ["Nicola Meoli <46779155+sononicola@users.noreply.github.com>"]
+license = "GPL-3.0-only"
+readme = "README.md"
+packages = [{include = "load_combinations"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+streamlit = "1.20.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
