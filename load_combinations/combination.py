@@ -31,7 +31,7 @@ class Load:
             self.action_type.value
         ]
 
-        # with open(Path(path.resolve(),"LoadCombinations","regulations.json")) as file:
+        # with open(Path(path.resolve(),"load_combinations","regulations.json")) as file:
         #   data = json.load(file)[CODE_NAME][self.action_type.value]
 
         self.name = data["name"]
@@ -209,7 +209,7 @@ class Combination:
         "Add gamma coeficients to Load objects. Have to be done here because they depend on design type"
         data = json.loads((path.parent / "regulations.json").read_text())[CODE_NAME]
 
-        # with open("LoadCombinations/regulations.json") as file:
+        # with open("load_combinations/regulations.json") as file:
         #   data = json.load(file)[CODE_NAME]
 
         for load in self.loads:
