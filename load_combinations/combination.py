@@ -16,8 +16,6 @@ def siunitex(number: float, unit: str = False) -> str:
     return "\\num{" + f"{number:.2f}" + "}"
 
 
-test = json.loads((path.parent / "regulations.json").read_text())
-print(test)
 
 
 @dataclass
@@ -30,9 +28,6 @@ class Load:
         data = json.loads((path.parent / "regulations.json").read_text())[CODE_NAME][
             self.action_type.value
         ]
-
-        # with open(Path(path.resolve(),"load_combinations","regulations.json")) as file:
-        #   data = json.load(file)[CODE_NAME][self.action_type.value]
 
         self.name = data["name"]
 
@@ -209,9 +204,7 @@ class Combination:
         "Add gamma coeficients to Load objects. Have to be done here because they depend on design type"
         data = json.loads((path.parent / "regulations.json").read_text())[CODE_NAME]
 
-        # with open("load_combinations/regulations.json") as file:
-        #   data = json.load(file)[CODE_NAME]
-
+       
         for load in self.loads:
             if load.action_type in PermanentActions:
                 load.gamma: list = data[f"gamma_{self.design_type.value}"][

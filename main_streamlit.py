@@ -1,6 +1,6 @@
 import streamlit as st
-from LoadCombinations.load_enums import LoadType, DesignTypeULS, PermanentActions, VariableActions
-from LoadCombinations.combination import Load, Combination
+from load_combinations.load_enums import LoadType, DesignTypeULS, PermanentActions, VariableActions
+from load_combinations.combination import Load, Combination
 
 # -- DATA --
 possibleActions = [load.value for load in PermanentActions]
@@ -96,5 +96,4 @@ with t1:
 
 with t2:
     st.code(comb.run("latex"),language="latex")
-    
 st.write(comb.calc_combinations_results())

@@ -1,5 +1,5 @@
-from LoadCombinations.load_enums import LoadType, DesignTypeULS, PermanentActions, VariableActions
-from LoadCombinations.combination import Load, Combination
+from load_combinations.load_enums import LoadType, DesignTypeULS, PermanentActions, VariableActions
+from load_combinations.combination import Load, Combination
 
 #TODO i kmod legno vanno definiti a mano nel json perché dipendono da troppe variabili
 #TODO error se I o K
@@ -13,7 +13,6 @@ def main():
     #q_c = Load(action_type=VariableActions.CAT_C, load_type=LoadType.UNFAVOURABLE, value=7)
     q_snow = Load(action_type=VariableActions.SNOW_LOWER100, load_type=LoadType.UNFAVOURABLE, value=10.13)
     q_wind = Load(action_type=VariableActions.WIND, load_type=LoadType.UNFAVOURABLE, value=0.4328)
-
 
 
     #print(q_a.action_type in PermanentActions)
