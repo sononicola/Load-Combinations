@@ -7,15 +7,13 @@ from .global_variables import *
 
 from pathlib import Path
 
-path = Path(__file__)
+path = Path(__file__).resolve()
 
 
 def siunitex(number: float, unit: str = False) -> str:
     if unit:
         return "\\SI{" + f"{number:.2f}" + "}{" + unit + "}"
     return "\\num{" + f"{number:.2f}" + "}"
-
-
 
 
 @dataclass
@@ -204,7 +202,6 @@ class Combination:
         "Add gamma coeficients to Load objects. Have to be done here because they depend on design type"
         data = json.loads((path.parent / "regulations.json").read_text())[CODE_NAME]
 
-       
         for load in self.loads:
             if load.action_type in PermanentActions:
                 load.gamma: list = data[f"gamma_{self.design_type.value}"][
