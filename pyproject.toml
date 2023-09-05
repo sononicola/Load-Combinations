@@ -8,11 +8,11 @@ readme = "README.md"
 packages = [{include = "load_combinations"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.1.0"
-streamlit = "1.20.0"
+streamlit = "1.26.0"
 
 
 [build-system]
