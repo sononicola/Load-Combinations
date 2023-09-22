@@ -1,6 +1,7 @@
 import streamlit as st
 from load_combinations.load_enums import LoadType, DesignTypeULS, PermanentActions, VariableActions
 from load_combinations.combination import Load, Combination
+from load_combinations.global_variables import POSSIBLE_UNITS, POSSIBLE_UNITS_MAP
 
 # -- DATA --
 possibleActions = [load.value for load in PermanentActions]
@@ -93,7 +94,11 @@ st.latex(r"\footnotesize"+comb.run("latex", is_streamlit=True))
 t1,t2,t3 = st.tabs(["Plain Text", "LaTeX", "LaTeX+SIunitx"])
 with t1:
         st.code(comb.run("plain"))
-
 with t2:
     st.code(comb.run("latex"),language="latex")
+with t3:
+    unit = st.selectbox(label="Choose the unit", options=list(POSSIBLE_UNITS_MAP.keys()), index=2)
+    st.code(comb.run("latex-siunitex", unit=unit),language="latex")
+
+
 st.write(comb.calc_combinations_results())

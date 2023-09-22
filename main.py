@@ -23,9 +23,9 @@ def main():
     #print(g2.gamma)
     #print(q_a.gamma)
 
-
     print(comb.run("plain"))
-    print(comb.calc_combinations_results("plain"))
+    print(comb.run("latex-siunitex", "kN"))
+    print(comb.calc_combinations_results("latex"))
 
 if __name__ == "__main__":
     main()

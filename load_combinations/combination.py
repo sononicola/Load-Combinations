@@ -10,10 +10,11 @@ from pathlib import Path
 path = Path(__file__).resolve()
 
 
-def siunitex(number: float, unit: str = False) -> str:
-    if unit:
-        return "\\SI{" + f"{number:.2f}" + "}{" + unit + "}"
-    return "\\num{" + f"{number:.2f}" + "}"
+def siunitex(number: float, unit: POSSIBLE_UNITS | None = None) -> str:
+    unit_si = POSSIBLE_UNITS_MAP.get(unit)
+    if unit_si is None:
+        return "\\num{" + f"{number:.2f}" + "}"
+    return "\\SI{" + f"{number:.2f}" + "}{" + unit_si + "}"
 
 
 @dataclass
@@ -107,6 +108,7 @@ class Load:
         gamma: bool,
         psi: Literal[0, 1, 2] | None = None,
         print_style: Literal["plain", "latex", "latex-siunitex"] = "plain",
+        unit: POSSIBLE_UNITS | None = None,
     ) -> str:
         if print_style == "plain":
             if gamma and psi != None:
@@ -134,27 +136,27 @@ class Load:
             if gamma and psi != None:
                 return (
                     f"{self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1]} {PRODUCT_LATEX} "
-                    + siunitex(self.value)
-                    + f"{PRODUCT_LATEX} {self.psi[psi]}"
+                    + siunitex(self.value, unit)
+                    + f" {PRODUCT_LATEX} {self.psi[psi]}"
                 )
             elif gamma and psi == None:
                 return (
                     f"{self.gamma[0] if self.load_type is LoadType.FAVOURABLE else self.gamma[1]} {PRODUCT_LATEX} "
-                    + siunitex(self.value)
+                    + siunitex(self.value, unit)
                 )
             elif gamma == False and psi != None:
                 return (
                     f"{NOTHING_LATEX+PRODUCT_LATEX if self.load_type is LoadType.FAVOURABLE else ''}"
-                    + siunitex(self.value)
-                    + f"{PRODUCT_LATEX} {self.psi[psi]}"
+                    + siunitex(self.value, unit)
+                    + f" {PRODUCT_LATEX} {self.psi[psi]}"
                 )
             elif gamma == False and psi == None:
                 return (
                     f"{NOTHING_LATEX+PRODUCT_LATEX if self.load_type is LoadType.FAVOURABLE else ''}"
-                    + siunitex(self.value)
+                    + siunitex(self.value, unit)
                 )
             else:
-                return siunitex(self.value)
+                return siunitex(self.value, unit)
 
     def prod_res(self, gamma: bool, psi: Literal[0, 1, 2] | None = None) -> float:
         gamma_real = (
@@ -279,8 +281,7 @@ class Combination:
         gamma: bool,
         psi: list[int | None],
         print_style: Literal["plain", "latex", "latex-siunitex"] = "latex",
-        measure_unit_plain: str = "kN",
-        measure_unit_siunitex: str = r"\kilo\newton",
+        unit: POSSIBLE_UNITS | None = None,
     ) -> list[dict]:
         combinations = self.combinations()
         # combinations are composed always with g1, g2, principal load, and not principal loads #TODO no anymore. check if its true
@@ -299,7 +300,9 @@ class Combination:
 
             for load in combinations[0]:
                 str_list.append(load.prod_str(gamma=gamma, print_style=print_style))
-                numb_list.append(load.prod_numb(gamma=gamma, print_style=print_style))
+                numb_list.append(
+                    load.prod_numb(gamma=gamma, print_style=print_style, unit=unit)
+                )
                 res_partial.append(load.prod_res(gamma=gamma))
             d_comb["str_list"] = str_list
             d_comb["numb_list"] = numb_list
@@ -328,7 +331,7 @@ class Combination:
                 if load.action_type in PermanentActions:
                     str_list.append(load.prod_str(gamma=gamma, print_style=print_style))
                     numb_list.append(
-                        load.prod_numb(gamma=gamma, print_style=print_style)
+                        load.prod_numb(gamma=gamma, print_style=print_style, unit=unit)
                     )
                     res_partial.append(load.prod_res(gamma=gamma))
 
@@ -339,7 +342,9 @@ class Combination:
                         load.prod_str(gamma=gamma, psi=psi[0], print_style=print_style)
                     )
                     numb_list.append(
-                        load.prod_numb(gamma=gamma, psi=psi[0], print_style=print_style)
+                        load.prod_numb(
+                            gamma=gamma, psi=psi[0], print_style=print_style, unit=unit
+                        )
                     )
                     res_partial.append(load.prod_res(gamma=gamma, psi=psi[0]))
                     principal_load = False
@@ -348,7 +353,9 @@ class Combination:
                         load.prod_str(gamma=gamma, psi=psi[1], print_style=print_style)
                     )
                     numb_list.append(
-                        load.prod_numb(gamma=gamma, psi=psi[1], print_style=print_style)
+                        load.prod_numb(
+                            gamma=gamma, psi=psi[1], print_style=print_style, unit=unit
+                        )
                     )
                     res_partial.append(load.prod_res(gamma=gamma, psi=psi[1]))
 
@@ -362,12 +369,19 @@ class Combination:
         return results_comb
 
     def calc_combinations_results(
-        self, print_style: Literal["plain", "latex", "latex-siunitex"] = "plain"
+        self,
+        print_style: Literal["plain", "latex", "latex-siunitex"] = "plain",
+        unit: POSSIBLE_UNITS | None = None,
     ) -> dict[list[dict]]:
         results = dict()
 
         results[NAME_ULS] = self.generic_comb(
-            name=NAME_ULS, name2="", gamma=True, psi=[None, 0], print_style=print_style
+            name=NAME_ULS,
+            name2="",
+            gamma=True,
+            psi=[None, 0],
+            print_style=print_style,
+            unit=unit,
         )
         results[NAME_SLS + NAME_SLS_CHAR] = self.generic_comb(
             name=NAME_SLS,
@@ -375,6 +389,7 @@ class Combination:
             gamma=False,
             psi=[None, 0],
             print_style=print_style,
+            unit=unit,
         )
         results[NAME_SLS + NAME_SLS_FREQ] = self.generic_comb(
             name=NAME_SLS,
@@ -382,6 +397,7 @@ class Combination:
             gamma=False,
             psi=[1, 2],
             print_style=print_style,
+            unit=unit,
         )
         results[NAME_SLS + NAME_SLS_QP] = self.generic_comb(
             name=NAME_SLS,
@@ -389,6 +405,7 @@ class Combination:
             gamma=False,
             psi=[2, 2],
             print_style=print_style,
+            unit=unit,
         )
         # TODO filtro solo carichi gravitazionali, quindi togliere Vento e P ?
         # results[NAME_ULS+NAME_SLS+"sismic"] = self.generic_comb(name = NAME_ULS+NAME_SLS, name2="sismic", gamma=False, psi= [2, 2], print_style=print_style)
@@ -397,9 +414,10 @@ class Combination:
     def print_from_results_dict(
         self,
         print_style: Literal["plain", "latex", "latex-siunitex"] = "plain",
+        unit: POSSIBLE_UNITS | None = None,
         is_streamlit: bool = False,
     ) -> str:
-        results: dict = self.calc_combinations_results(print_style)
+        results: dict = self.calc_combinations_results(print_style, unit=unit)
 
         if print_style == "plain":
             text = ""
@@ -473,10 +491,59 @@ class Combination:
                     # text += "\n".ljust(JUST)
             text += r"\end{align}" if is_streamlit == False else r"\end{aligned}" + "\n"
             return text
+        if print_style == "latex-siunitex":
+            text = (
+                r"\begin{align}" + "\n"
+                if is_streamlit == False
+                else r"\begin{aligned}" + "\n"
+            )
+            JUST = 25
+            for key in list(results.keys()):
+                combs: list[dict] = results.get(key)
+                # text += f"===== {key} =====\n"
+                for comb in combs:
+                    text += r"\begin{split}" + "\n" if is_streamlit == False else "\n"
+                    text += (
+                        f"{Q_NAME_LATEX+comb.get('name_combination')+'}^{'+key+'}'}".ljust(
+                            JUST - 1
+                        )
+                        + "&= "
+                        + f"{' + '.join(comb.get('str_list'))} \\\\"
+                    )
+                    text += (
+                        "\n ".ljust(JUST)
+                        + "&= "
+                        + f"{' + '.join(comb.get('numb_list'))} \\\\"
+                    )
+                    text += (
+                        "\n ".ljust(JUST)
+                        + "&= "
+                        + f"{' + '.join([f'{siunitex(i,unit)}' for i in comb.get('res_partial')])} \\\\"
+                    )  # they were floats not strings
+                    text += (
+                        "\n ".ljust(JUST)
+                        + "&= "
+                        + f"{siunitex(comb.get('tot'),unit)} \n"
+                        + r"\end{split} \\"
+                        + "\n"
+                        if is_streamlit == False
+                        else "\n ".ljust(JUST)
+                        + "&= "
+                        + f"{siunitex(comb.get('tot'),unit)} \n"
+                        + r" \\"
+                        + "\n"
+                    )
+                    # text += r"\end{split} \\".ljust(JUST)
+                    # text += "\n".ljust(JUST)
+            text += r"\end{align}" if is_streamlit == False else r"\end{aligned}" + "\n"
+            return text
 
     def run(
         self,
         print_style: Literal["plain", "latex", "latex-siunitex"] = "plain",
+        unit: POSSIBLE_UNITS | None = None,
         is_streamlit: bool = False,
     ) -> str:
-        return self.print_from_results_dict(print_style, is_streamlit=is_streamlit)
+        return self.print_from_results_dict(
+            print_style, unit=unit, is_streamlit=is_streamlit
+        )

@@ -1,3 +1,6 @@
+from typing import Literal
+
+
 CODE_NAME = "NTC18"
 
 NAME_ULS = "SLU "
@@ -27,7 +30,7 @@ NOTHING_PLAIN = "∅"
 NOTHING_LATEX = r"\varnothing"
 
 
-DICT_GENIERIC_MATERIAL = {
+DICT_GENERIC_MATERIAL = {  #TODO # NOT USED ATM
     "ULS": {
         "gamma": True,
         "psi" : (None,0)
@@ -46,3 +49,12 @@ DICT_GENIERIC_MATERIAL = {
         }
 
 }
+
+POSSIBLE_UNITS = Literal["", "kN", "kN/m", "kN/m²", "kNm"]
+POSSIBLE_UNITS_MAP = {
+        "" : None,
+        "kN" : r"\kilo\newton", 
+        "kN/m": r"\kilo\newton\per\metre", 
+        "kN/m²": r"\kilo\newton\per\metre\squared", 
+        "kNm": r"\kilo\newton\metre"
+                    }
